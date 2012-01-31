@@ -17,6 +17,9 @@ ifeq ($(strip $(kernel_not_configured)),)
 ifeq ($(TARGET_PRODUCT), omap3evm)
 	$(MAKE) -C kernel ARCH=arm omap3_evm_android_defconfig
 endif
+ifeq ($(TARGET_PRODUCT), beagleboard)
+	$(MAKE) -C kernel ARCH=arm omap3_beagle_android_defconfig
+endif
 endif
 	$(MAKE) -C kernel ARCH=arm CROSS_COMPILE=../$($(combo_target)TOOLS_PREFIX) uImage
 
