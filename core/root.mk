@@ -9,7 +9,12 @@ ifeq ($(TARGET_PRODUCT), omap3evm)
 rowboat: sgx
 CLEAN_RULE = sgx_clean kernel_clean clean
 else
+ifeq ($(TARGET_PRODUCT), beagleboard)
+rowboat: sgx
+CLEAN_RULE = sgx_clean kernel_clean clean
+else
 rowboat: kernel_build
+endif
 endif
 
 kernel_build: droid
