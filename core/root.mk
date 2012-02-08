@@ -6,8 +6,8 @@ export ANDROID_FS_DIR := $(ANDROID_INSTALL_DIR)/out/target/product/$(TARGET_PROD
 kernel_not_configured := $(wildcard kernel/.config)
 
 ifeq ($(TARGET_PRODUCT), omap3evm)
-rowboat: sgx
-CLEAN_RULE = sgx_clean kernel_clean clean
+rowboat: sgx wl12xx_compat
+CLEAN_RULE = wl12xx_compat_clean sgx_clean kernel_clean clean
 else
 ifeq ($(TARGET_PRODUCT), beagleboard)
 rowboat: sgx
@@ -41,6 +41,12 @@ sgx: kernel_build
 
 sgx_clean:
 	$(MAKE) -C hardware/ti/sgx ANDROID_ROOT_DIR=$(ANDROID_INSTALL_DIR) TOOLS_PREFIX=$($(combo_target)TOOLS_PREFIX) clean
+
+wl12xx_compat: kernel_build
+	$(MAKE) -C hardware/ti/wlan/mac80211/compat ANDROID_ROOT_DIR=$(ANDROID_INSTALL_DIR) CROSS_COMPILE=arm-eabi- ARCH=arm install
+
+wl12xx_compat_clean:
+	$(MAKE) -C hardware/ti/wlan/mac80211/compat ANDROID_ROOT_DIR=$(ANDROID_INSTALL_DIR) CROSS_COMPILE=arm-eabi- ARCH=arm clean
 
 
 # Make a tarball for the filesystem
