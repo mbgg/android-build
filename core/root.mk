@@ -31,7 +31,12 @@ ifeq ($(TARGET_PRODUCT), flashboard)
 rowboat: sgx
 CLEAN_RULE = sgx_clean kernel_clean clean
 else
+ifeq ($(TARGET_PRODUCT), am335xevm)
+rowboat: sgx
+CLEAN_RULE = sgx_clean kernel_clean clean
+else
 rowboat: kernel_build
+endif
 endif
 endif
 endif
@@ -54,6 +59,9 @@ ifeq ($(TARGET_PRODUCT), ti814xevm)
 endif
 ifeq ($(TARGET_PRODUCT), ti816xevm)
 	$(MAKE) -C kernel ARCH=arm ti8168_evm_android_defconfig
+endif
+ifeq ($(TARGET_PRODUCT), am335xevm)
+        $(MAKE) -C kernel ARCH=arm am335x_evm_android_defconfig
 endif
 endif
 	$(MAKE) -C kernel ARCH=arm CROSS_COMPILE=arm-eabi- uImage
