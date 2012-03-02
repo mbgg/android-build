@@ -32,8 +32,8 @@ rowboat: sgx wl12xx_compat
 CLEAN_RULE = wl12xx_compat_clean sgx_clean kernel_clean clean
 else
 ifeq ($(TARGET_PRODUCT), am335xevm)
-rowboat: sgx
-CLEAN_RULE = sgx_clean kernel_clean clean
+rowboat: sgx wl12xx_compat
+CLEAN_RULE = wl12xx_compat_clean sgx_clean kernel_clean clean
 else
 rowboat: kernel_build
 endif
