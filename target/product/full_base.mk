@@ -30,7 +30,8 @@ PRODUCT_PACKAGES := \
     libWnnJpnDic \
     libwnndict \
     VideoEditor \
-    WAPPushManager
+    WAPPushManager \
+    Camera
 
 # Additional settings used in all AOSP builds
 PRODUCT_PROPERTY_OVERRIDES := \
