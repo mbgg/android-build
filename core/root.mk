@@ -6,6 +6,7 @@ export SYSLINK_INSTALL_DIR := $(ANDROID_INSTALL_DIR)/hardware/ti/ti81xx/syslink_
 export IPC_INSTALL_DIR := $(ANDROID_INSTALL_DIR)/hardware/ti/ti81xx/syslink_vpss/ipc_1_23_01_26
 export IPC_DIR := $(ANDROID_INSTALL_DIR)/hardware/ti/ti81xx/syslink_vpss/ipc_1_23_01_26
 export PATH :=$(PATH):$(ANDROID_INSTALL_DIR)/prebuilt/linux-x86/toolchain/arm-eabi-4.4.3/bin
+export WILINK
 
 kernel_not_configured := $(wildcard kernel/.config)
 
@@ -97,12 +98,19 @@ endif
 sgx_clean:
 	$(MAKE) -C hardware/ti/sgx ANDROID_ROOT_DIR=$(ANDROID_INSTALL_DIR) clean
 
+ifeq ($(WILINK), wl18xx)
+wl12xx_compat: kernel_build
+	$(MAKE) -C hardware/ti/wlan/mac80211/compat_wilink8 ANDROID_ROOT_DIR=$(ANDROID_INSTALL_DIR) CROSS_COMPILE=arm-eabi- ARCH=arm install
+
+wl12xx_compat_clean:
+	$(MAKE) -C hardware/ti/wlan/mac80211/compat_wilink8 ANDROID_ROOT_DIR=$(ANDROID_INSTALL_DIR) CROSS_COMPILE=arm-eabi- ARCH=arm clean
+else
 wl12xx_compat: kernel_build
 	$(MAKE) -C hardware/ti/wlan/mac80211/compat ANDROID_ROOT_DIR=$(ANDROID_INSTALL_DIR) CROSS_COMPILE=arm-eabi- ARCH=arm install
 
 wl12xx_compat_clean:
 	$(MAKE) -C hardware/ti/wlan/mac80211/compat ANDROID_ROOT_DIR=$(ANDROID_INSTALL_DIR) CROSS_COMPILE=arm-eabi- ARCH=arm clean
-
+endif
 
 # Build Syslink
 syslink:
