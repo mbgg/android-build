@@ -28,6 +28,10 @@ ifeq ($(TARGET_PRODUCT), beagleboard)
 rowboat: sgx
 CLEAN_RULE = sgx_clean kernel_clean clean
 else
+ifeq ($(TARGET_PRODUCT), igep00x0)
+rowboat: sgx
+CLEAN_RULE = sgx_clean kernel_clean clean
+else
 ifeq ($(TARGET_PRODUCT), flashboard)
 rowboat: sgx wl12xx_compat
 CLEAN_RULE = wl12xx_compat_clean sgx_clean kernel_clean clean
@@ -48,6 +52,7 @@ endif
 endif
 endif
 endif
+endif
 
 kernel_build: droid
 ifeq ($(strip $(kernel_not_configured)),)
@@ -56,6 +61,9 @@ ifeq ($(TARGET_PRODUCT), omap3evm)
 endif
 ifeq ($(TARGET_PRODUCT), beagleboard)
 	$(MAKE) -C kernel ARCH=arm omap3_beagle_android_defconfig
+endif
+ifeq ($(TARGET_PRODUCT), igep00x0)
+	$(MAKE) -C kernel ARCH=arm igep00x0_android_defconfig
 endif
 ifeq ($(TARGET_PRODUCT), flashboard)
 	$(MAKE) -C kernel ARCH=arm flashboard_android_defconfig
@@ -73,7 +81,11 @@ ifeq ($(TARGET_PRODUCT), beaglebone)
 	$(MAKE) -C kernel ARCH=arm am335x_evm_android_defconfig
 endif
 endif
+ifeq ($(TARGET_PRODUCT), igep00x0)
+	$(MAKE) -C kernel ARCH=arm CROSS_COMPILE=arm-eabi- zImage
+else
 	$(MAKE) -C kernel ARCH=arm CROSS_COMPILE=arm-eabi- uImage
+endif
 
 kernel_clean:
 	$(MAKE) -C kernel ARCH=arm  distclean
