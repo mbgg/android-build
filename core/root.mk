@@ -30,7 +30,7 @@ CLEAN_RULE = sgx_clean kernel_clean clean
 else
 ifeq ($(TARGET_PRODUCT), igep00x0)
 rowboat: sgx
-CLEAN_RULE = sgx_clean kernel_clean clean
+CLEAN_RULE = sgx_clean kernel_clean igep_x_loader_clean clean
 else
 ifeq ($(TARGET_PRODUCT), flashboard)
 rowboat: sgx wl12xx_compat
@@ -100,7 +100,11 @@ else
 ifeq ($(TARGET_PRODUCT), ti816xevm)
 sgx: kernel_build ti81xx_kernel_modules
 else
+ifeq ($(TARGET_PRODUCT), igep00x0)
+sgx: kernel_build igep_x_loader
+else
 sgx: kernel_build
+endif
 endif
 endif
 	@echo "SGX build ......................................................"
@@ -143,6 +147,12 @@ syslink:
 
 	cp -r $(SYSLINK_INSTALL_DIR)/packages/ti/syslink/bin/$(SYSLINK_VARIANT_NAME)/syslink.ko $(SYSLINK_INSTALL_DIR)/packages/ti/syslink/bin/$(SYSLINK_VARIANT_NAME)/samples/slaveloader_release $(ANDROID_INSTALL_DIR)/hardware/ti/ti81xx/syslink_vpss/hdvpss/$(SYSLINK_VARIANT_NAME)/* $(ANDROID_INSTALL_DIR)/out/target/product/$(TARGET_PRODUCT)/system/bin/syslink/
 
+igep_x_loader_clean:
+	$(MAKE) -C igep-x-loader distclean
+
+igep_x_loader:
+	$(MAKE) -C igep-x-loader igep00x0_config
+	$(MAKE) -C igep-x-loader
 
 # Build VPSS / HDMI modules
 ti81xx_kernel_modules: syslink
