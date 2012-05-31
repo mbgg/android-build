@@ -63,7 +63,7 @@ ifeq ($(TARGET_PRODUCT), beagleboard)
 	$(MAKE) -C kernel ARCH=arm omap3_beagle_android_defconfig
 endif
 ifeq ($(TARGET_PRODUCT), igep00x0)
-	$(MAKE) -C kernel ARCH=arm igep0020_android_defconfig
+	$(MAKE) -C kernel ARCH=arm igep00x0_android_defconfig
 endif
 ifeq ($(TARGET_PRODUCT), flashboard)
 	$(MAKE) -C kernel ARCH=arm flashboard_android_defconfig
