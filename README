@@ -1,0 +1,76 @@
+This README file contains information on building android for igep00x0
+boards. Please see the corresponding sections below for details.
+
+Table of Contents
+=================
+
+  I. Build the environment (Ubuntu 12.04)
+ II. Download the source code.
+III. Build the source code.
+
+
+I. Build the environment (Ubuntu 12.04)
+=================================================================
+
+Get Java SE 6 Update 32 (JDK) in version 6 from:
+  http://www.oracle.com/technetwork/java/javase/downloads/index.html
+
+The file is called something like jdk-6u32-linux-i586.bin
+
+  $ chmod u+x jdk-6u31-linux-i586.bin
+  $ ./jdk-6u31-linux-i586.bin
+  $ sudo mv jdk1.6.0_31 /usr/lib/jvm/
+  $ sudo update-alternatives --install "/usr/bin/java" "java" "/usr/lib/jvm/jdk1.6.0_32/bin/java" 1
+  $ sudo update-alternatives --install "/usr/bin/javac" "javac" "/usr/lib/jvm/jdk1.6.0_32/bin/javac" 1
+
+Do the last step as well for javap, javah, javadoc and javaws. (or be the first to try it without that...)
+
+Afterwards set the alternatives link to the newly installed Java version:
+
+  $ sudo update-alternatives --config java
+  $ sudo update-alternatives --config javac
+
+Do the last step as well for javap, javah, javadoc and javaws. (or be the first to try it without that...)
+See also https://help.ubuntu.com/community/Java#Oracle_.28Sun.29_Java_6
+
+Apart from that you need to install a older version of gcc and c++ to be compatible with the build environment:
+
+  $ sudo apt-get install gcc-4.4-multilib g++-4.4
+
+Change the softlinks in /usr/bin/ for gcc and g++ (evil!)
+
+To create the MLO we need the linaro cross compile toolchain installed on our machine. To check it, try:
+
+  $ arm-linux-gnueabi-gcc --version
+arm-linux-gnueabi-gcc (Ubuntu/Linaro 4.5.3-12ubuntu2) 4.5.3
+
+
+II. Download the source code.
+=================================================================
+
+In order to build an android image for this release, you need to download
+the corresponding android repository.
+
+  $ curl https://dl-ssl.google.com/dl/googlesource/git-repo/repo > ~/bin/repo
+  $ chmod a+x ~/bin/repo
+
+  $ mkdir android
+  $ cd android
+  $ repo init -u git://git.isee.biz/pub/scm/android/manifest -b master -m rowboat-ics.xml
+  $ repo sync
+
+
+II. Build the source code.
+=================================================================
+
+Having downloaded the source code, you can build an igep00x0 image as such:
+
+  $ . build/envsetup.sh
+  $ make TARGET_PRODUCT=igep00x0 OMAPES=5.x -j8
+
+
+Beware, with the version beneath compiling the Kernel will fail, but we don't
+have to change the gcc and g++ links.
+ $ make CC=gcc-4.4 CXX=g++-4.4 TARGET_PRODUCT=igep00x0 -j8
+
+
