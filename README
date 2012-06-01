@@ -16,6 +16,7 @@ Get Java SE 6 Update 32 (JDK) in version 6 from:
   http://www.oracle.com/technetwork/java/javase/downloads/index.html
 
 The file is called something like jdk-6u32-linux-i586.bin
+In the download folder, execute the following commands:
 
   $ chmod u+x jdk-6u31-linux-i586.bin
   $ ./jdk-6u31-linux-i586.bin
@@ -23,23 +24,26 @@ The file is called something like jdk-6u32-linux-i586.bin
   $ sudo update-alternatives --install "/usr/bin/java" "java" "/usr/lib/jvm/jdk1.6.0_32/bin/java" 1
   $ sudo update-alternatives --install "/usr/bin/javac" "javac" "/usr/lib/jvm/jdk1.6.0_32/bin/javac" 1
 
-Do the last step as well for javap, javah, javadoc and javaws. (or be the first to try it without that...)
+Do the last step as well for javap, javah, javadoc and javaws.
 
 Afterwards set the alternatives link to the newly installed Java version:
 
   $ sudo update-alternatives --config java
   $ sudo update-alternatives --config javac
 
-Do the last step as well for javap, javah, javadoc and javaws. (or be the first to try it without that...)
+Do the last step as well for javap, javah, javadoc and javaws.
 See also https://help.ubuntu.com/community/Java#Oracle_.28Sun.29_Java_6
+
 
 Apart from that you need to install a older version of gcc and c++ to be compatible with the build environment:
 
   $ sudo apt-get install gcc-4.4-multilib g++-4.4
 
-Change the softlinks in /usr/bin/ for gcc and g++ (evil!)
+As root, change the softlinks in /usr/bin/ for gcc and g++, so that gcc and g++ points to version 4.4.
 
-To create the MLO we need the linaro cross compile toolchain installed on our machine. To check it, try:
+
+To create the igep-x-loader (MLO) we need the linaro cross compile toolchain installed on our machine.
+To check it if it's installed, try:
 
   $ arm-linux-gnueabi-gcc --version
 arm-linux-gnueabi-gcc (Ubuntu/Linaro 4.5.3-12ubuntu2) 4.5.3
@@ -67,10 +71,4 @@ Having downloaded the source code, you can build an igep00x0 image as such:
 
   $ . build/envsetup.sh
   $ make TARGET_PRODUCT=igep00x0 OMAPES=5.x -j8
-
-
-Beware, with the version beneath compiling the Kernel will fail, but we don't
-have to change the gcc and g++ links.
- $ make CC=gcc-4.4 CXX=g++-4.4 TARGET_PRODUCT=igep00x0 -j8
-
 
