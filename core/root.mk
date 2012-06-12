@@ -82,7 +82,7 @@ ifeq ($(TARGET_PRODUCT), beaglebone)
 endif
 endif
 ifeq ($(TARGET_PRODUCT), igep00x0)
-	$(MAKE) -C kernel ARCH=arm CROSS_COMPILE=arm-eabi- zImage
+	$(MAKE) -C kernel ARCH=arm CROSS_COMPILE=arm-eabi- zImage modules
 else
 	$(MAKE) -C kernel ARCH=arm CROSS_COMPILE=arm-eabi- uImage
 endif
@@ -101,7 +101,7 @@ ifeq ($(TARGET_PRODUCT), ti816xevm)
 sgx: kernel_build ti81xx_kernel_modules
 else
 ifeq ($(TARGET_PRODUCT), igep00x0)
-sgx: kernel_build igep_x_loader
+sgx: kernel_build igep_x_loader igep_copy_modules
 else
 sgx: kernel_build
 endif
@@ -153,6 +153,9 @@ igep_x_loader_clean:
 igep_x_loader:
 	$(MAKE) -C igep-x-loader igep00x0_config
 	$(MAKE) -C igep-x-loader
+
+igep_copy_modules:
+	cp $(ANDROID_INSTALL_DIR)/kernel/drivers/net/wireless/libertas/*.ko out/target/product/igep00x0/system/bin/libertas/
 
 # Build VPSS / HDMI modules
 ti81xx_kernel_modules: syslink
