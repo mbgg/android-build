@@ -154,7 +154,7 @@ igep_x_loader:
 	$(MAKE) -C igep-x-loader igep00x0_config
 	$(MAKE) -C igep-x-loader all &> /dev/null
 
-igep_copy_modules:
+igep_copy_modules: | kernel_build
 	mkdir -p out/target/product/igep00x0/system/bin/libertas/
 	cp $(ANDROID_INSTALL_DIR)/kernel/drivers/net/wireless/libertas/*.ko out/target/product/igep00x0/system/bin/libertas/
 
