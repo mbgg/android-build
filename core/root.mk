@@ -9,6 +9,8 @@ export PATH :=$(PATH):$(ANDROID_INSTALL_DIR)/prebuilt/linux-x86/toolchain/arm-ea
 export WILINK
 
 kernel_not_configured := $(wildcard kernel/.config)
+dvsdk_not_installed := $(wildcard external/ti-dsp/already_clean)
+#DSP_PATH := $(wildcard external/ti-dsp)
 
 ifeq ($(TARGET_PRODUCT), ti814xevm)
 export SYSLINK_VARIANT_NAME := TI814X
@@ -29,8 +31,10 @@ rowboat: sgx
 CLEAN_RULE = sgx_clean kernel_clean clean
 else
 ifeq ($(TARGET_PRODUCT), igep00x0)
+#rowboat: dvsdk sgx
 rowboat: sgx
 CLEAN_RULE = sgx_clean kernel_clean igep_x_loader_clean clean
+#CLEAN_RULE = dvsdk_clean sgx_clean kernel_clean igep_x_loader_clean clean
 else
 ifeq ($(TARGET_PRODUCT), flashboard)
 rowboat: sgx wl12xx_compat
@@ -171,5 +175,25 @@ fs_tarball:
 	cp -r $(ANDROID_INSTALL_DIR)/out/target/product/$(TARGET_PRODUCT)/system/ $(ANDROID_FS_DIR)
 	(cd $(ANDROID_INSTALL_DIR)/out/target/product/$(TARGET_PRODUCT); \
 	 ../../../../build/tools/mktarball.sh ../../../host/linux-x86/bin/fs_get_stats android_rootfs . rootfs rootfs.tar.bz2)
+
+.PHONY: dvsdk
+dvsdk: kernel
+ifeq ($(strip $(dvsdk_not_installed)),)
+	TOOLS_DIR=$(dir `pwd`/$($(combo_target)TOOLS_PREFIX))../ ./external/ti-dsp/get_tidsp.sh
+	touch ./external/ti-dsp/already_clean
+	make -C external/ti-dsp combo_target=$(combo_target) $(combo_target)TOOLS_PREFIX=$($(combo_target)TOOLS_PREFIX) HOST_PREBUILT_TAG=$(HOST_PREBUILT_TAG) clean
+endif
+	make -C external/ti-dsp combo_target=$(combo_target) $(combo_target)TOOLS_PREFIX=$($(combo_target)TOOLS_PREFIX) HOST_PREBUILT_TAG=$(HOST_PREBUILT_TAG)
+	make -C hardware/ti/omx combo_target=$(combo_target) $(combo_target)TOOLS_PREFIX=$($(combo_target)TOOLS_PREFIX) HOST_PREBUILT_TAG=$(HOST_PREBUILT_TAG)
+
+.PHONY: dvsdk_clean
+dvsdk_clean:
+	make -C hardware/ti/omx OMAPES=$(OMAPES) clean
+	make -C external/ti-dsp combo_target=$(combo_target) $(combo_target)TOOLS_PREFIX=$($(combo_target)TOOLS_PREFIX) HOST_PREBUILT_TAG=$(HOST_PREBUILT_TAG) clean
+
+.PHONY: dvsdk_distclean
+dvsdk_distclean:
+	make -C hardware/ti/omx OMAPES=$(OMAPES) clean
+	make -C external/ti-dsp OMAPES=$(OMAPES) distclean
 
 rowboat_clean: $(CLEAN_RULE)
