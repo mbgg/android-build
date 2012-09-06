@@ -155,6 +155,7 @@ igep_x_loader_clean:
 	$(MAKE) -C igep-x-loader distclean
 
 igep_x_loader:
+	cd igep-x-loader && git checkout 67f8c169484185ba31f3e39119798db761df9803 && cd ..
 	$(MAKE) -C igep-x-loader igep00x0_config
 	$(MAKE) -C igep-x-loader all &> /dev/null
 
